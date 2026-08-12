@@ -1,0 +1,6 @@
+@ASPHW3_Services__DI__HostAddress = http://localhost:5116
+
+GET {{ASPHW3_Services__DI__HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
