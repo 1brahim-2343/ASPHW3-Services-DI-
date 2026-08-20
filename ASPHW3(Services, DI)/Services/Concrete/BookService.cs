@@ -1,6 +1,7 @@
 ﻿using ASPHW3_Services__DI_.Models;
 using ASPHW3_Services__DI_.Repository.Abstract;
 using ASPHW3_Services__DI_.Services.Abstract;
+using System.Collections;
 
 namespace ASPHW3_Services__DI_.Services.Concrete
 {
@@ -61,6 +62,112 @@ namespace ASPHW3_Services__DI_.Services.Concrete
             return _bookRepo.Get(id);
         }
 
+        public IQueryable<Book> GetAvailable()
+        {
+            var result = Get().Where(b => b.IsAvailable == true);
+            return result;
+        }
+
+        public IEnumerable<Book> GetByAuthorName(string name)
+        {
+            if (!String.IsNullOrEmpty(name))
+            {
+                var result = _bookRepo.GetByAuthorName(name);
+                return result;
+            }
+            else
+            {
+                throw new ArgumentException("Name must not be empty");
+            }
+        }
+
+        public IEnumerable<Book> GetByCategory(string category)
+        {
+            if (!String.IsNullOrEmpty(category))
+            {
+                var result = _bookRepo.GetByCategory(category);
+                return result;
+            }
+            else
+            {
+                throw new ArgumentException("Category must not be empty");
+            }
+        }
+
+        public IEnumerable<Book> GetByTitle(string title)
+        {
+            if (!String.IsNullOrEmpty(title))
+            {
+                var result = _bookRepo.GetByTitle(title);
+                return result;
+            }
+            else
+            {
+                throw new ArgumentException("Title must not be empty");
+            }
+        }
+
+        public IQueryable<Book> GetByYear(int year)
+        {
+            var result = Get().Where(b => b.PublishedYear == year);
+            return result;
+        }
+
+        public IQueryable<Book> SortByPrice(decimal? min, decimal? max)
+        {
+            if (min.HasValue && min < 0)
+            {
+                throw new ArgumentException("Minimum price can not be negative");
+            }
+
+            if (max.HasValue && max < 0)
+            {
+                throw new ArgumentException("Maximum price can not be negative");
+            }
+
+            if (min.HasValue &&
+                max.HasValue &&
+                min > max)
+            {
+                throw new ArgumentException("Minimum value can not be greater than maximum value");
+            }
+
+            var result = Get();
+
+            if (min.HasValue)
+            {
+                result = result.Where(b => b.Price >= min.Value);
+            }
+
+            if (max.HasValue)
+            {
+                result = result.Where(b => b.Price <= max.Value);
+            }
+
+            return result;
+        }
+
+        public IEnumerable<Book> SortByYear(string direction)
+        {
+            if (!(direction.Equals("asc", StringComparison.OrdinalIgnoreCase) ||
+                direction.Equals("desc", StringComparison.OrdinalIgnoreCase)))
+            {
+                throw new Exception("Invalid direction");
+            }
+
+            IEnumerable<Book> result = Get().ToList();
+            if (direction.Equals("asc", StringComparison.OrdinalIgnoreCase))
+            {
+                result = result.OrderBy(b => b.Price);
+            }
+            else if (direction.Equals("desc", StringComparison.OrdinalIgnoreCase))
+            {
+                result = result.OrderByDescending(b => b.Price);
+            }
+
+            return result;
+        }
+
         public Book? Update(Book book)
         {
             bool validBook;
@@ -85,7 +192,7 @@ namespace ASPHW3_Services__DI_.Services.Concrete
             {
                 return null;
             }
-            
+
         }
 
         private bool ValidateBook(Book book)

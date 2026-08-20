@@ -1,5 +1,7 @@
 
 using ASPHW3_Services__DI_.Data;
+using ASPHW3_Services__DI_.Repository.Abstract;
+using ASPHW3_Services__DI_.Repository.Concrete;
 using ASPHW3_Services__DI_.Services.Abstract;
 using ASPHW3_Services__DI_.Services.Concrete;
 using Microsoft.EntityFrameworkCore;
@@ -23,6 +25,7 @@ namespace ASPHW3_Services__DI_
             builder.Services.AddDbContext<BookContext>(options => options.UseSqlServer(connection));
 
             builder.Services.AddScoped<IBookService, BookService>();
+            builder.Services.AddScoped<IBookRepository, BookRepository>();
 
             var app = builder.Build();
 

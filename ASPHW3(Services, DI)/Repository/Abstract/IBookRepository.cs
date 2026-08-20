@@ -6,9 +6,13 @@ namespace ASPHW3_Services__DI_.Repository.Abstract
     {
         IQueryable<Book> Get();
         Book? Get(int id);
+        IEnumerable<Book> GetByTitle(string title);
+        IEnumerable<Book> GetByAuthorName(string name);
+        IEnumerable<Book> GetByCategory(string category);
         void Delete(Book book);
         Book Update(Book book);
         Book Add(Book book);
         bool SaveChanges();
+
     }
 }
