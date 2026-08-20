@@ -7,7 +7,7 @@ namespace ASPHW3_Services__DI_.Services.Abstract
         IQueryable<Book> Get();
         Book? Get(int id);
         bool Delete(Book book);
-        Book Update(Book book);
-        Book Add(Book book);
+        Book? Update(Book book);
+        Book? Add(Book book);
     }
 }

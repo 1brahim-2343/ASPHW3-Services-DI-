@@ -99,8 +99,7 @@ namespace ASPHW3_Services__DI_.Controllers
         [HttpGet]
         public ActionResult<Book> GetAll()
         {
-            var books = _books;
-
+            var books = _bookService.Get();
             return Ok(books);
         }
 
@@ -108,7 +107,7 @@ namespace ASPHW3_Services__DI_.Controllers
         [HttpGet("{id:int}")]
         public ActionResult<Book> GetById(int id)
         {
-            var resultBook = _books.FirstOrDefault(b => b.Id == id);
+            var resultBook = _bookService.Get(id);
 
             if (id <= 0) return BadRequest($"Invalid id {id}");
 
@@ -122,6 +121,7 @@ namespace ASPHW3_Services__DI_.Controllers
         public ActionResult<Book> Add(
             [FromBody] Book newBook)
         {
+            
             if (String.IsNullOrWhiteSpace(newBook.Title) ||
                 String.IsNullOrWhiteSpace(newBook.Author) ||
                 String.IsNullOrWhiteSpace(newBook.Category))
@@ -152,6 +152,8 @@ namespace ASPHW3_Services__DI_.Controllers
             createdBook.Id = lastId + 1;
 
             _books.Add(createdBook);
+
+            _bookService.Add(newBook);
 
             return CreatedAtAction(
              nameof(GetById),
@@ -205,6 +207,8 @@ namespace ASPHW3_Services__DI_.Controllers
             book.PageCount = updatedBook.PageCount;
             book.PublishedYear = updatedBook.PublishedYear;
             book.IsAvailable = updatedBook.IsAvailable;
+            
+            _bookService.Update(book)
 
             return Ok(book);
         }
